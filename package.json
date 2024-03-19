@@ -6,10 +6,27 @@
     "start": "next start"
   },
   "dependencies": {
+    "@emotion/cache": "latest",
+    "@emotion/react": "latest",
+    "@emotion/server": "latest",
+    "@emotion/styled": "latest",
+    "@mui/icons-material": "latest",
+    "@mui/material": "latest",
+    "@mui/material-nextjs": "latest",
+    "bcryptjs": "^2.4.3",
+    "btoa": "^1.2.1",
+    "formdata-node": "^6.0.3",
+    "js-cookie": "^3.0.5",
+    "jsonwebtoken": "^9.0.2",
+    "jwt-decode": "^4.0.0",
     "mongodb": "^6.5.0",
     "next": "latest",
+    "next-swagger-doc": "^0.1.9",
+    "node-fetch": "^2.7.0",
+    "prop-types": "latest",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "swagger-ui-react": "^3.52.3"
   },
   "devDependencies": {
     "@types/node": "18.7.5",
