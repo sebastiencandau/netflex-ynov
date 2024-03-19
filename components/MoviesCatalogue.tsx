@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, Card, CardContent, CardMedia, Typography, CircularProgress, Button, TextField } from '@mui/material';
 import SecureLayout from './SecureLayout';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import theme from '../theme/theme';
 
 interface Movie {
@@ -8,7 +9,8 @@ interface Movie {
   title: string;
   overview: string;
   poster_path: string;
-  likeCounter: number; // Nouveau champ pour le nombre de likes
+  likeCounter: number;
+  isLiked: boolean; // Nouveau champ pour indiquer si le film est déjà liké par l'utilisateur
 }
 
 const MovieCatalogue = () => {
@@ -27,21 +29,23 @@ const MovieCatalogue = () => {
       let url = `/api/movies-selection`;
 
       if (searchTerm.trim() !== '') {
-        url = `/api/search-movies?searchTerm=${encodeURIComponent(searchTerm.trim())}`;
+        url = `/api/search-movies?searchTerm=${encodeURIComponent(searchTerm.trim())}&page=${page}`;
+        console.log(url)
       }
 
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error('Failed to fetch movies');
-      }
+      const token = localStorage.getItem('token');
+
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `${token}`
+        }
+      });
 
       const data = await response.json();
 
-      // Mettre à jour les données des films avec le nombre de likes
       const moviesWithLikes = await Promise.all(data.movies.map(async (movie: Movie) => {
         const likesResponse = await fetch(`/api/movies/${movie.id}/likes`);
         const likesData = await likesResponse.json();
-        // Vérifier si la réponse est null, alors définir le nombre de likes à 0
         movie.likeCounter = likesData.data.likes ? likesData.data.likes.likeCounter : 0;
         return movie;
       }));
@@ -63,8 +67,6 @@ const MovieCatalogue = () => {
     setMovies([]);
   };
 
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-
   const handleLike = async (movieId: number) => {
     try {
       const token = localStorage.getItem('token');
@@ -75,14 +77,13 @@ const MovieCatalogue = () => {
           'Content-Type': 'application/json',
           'Authorization': token ? `${token}` : ''
         },
-        body: JSON.stringify({ token: token }) // Envoyer le token dans le corps de la requête
+        body: JSON.stringify({ token: token })
       });
   
       if (!response.ok) {
         throw new Error('Failed to like the movie');
       }
   
-      // Rafraîchir la liste des films après avoir liké
       fetchMovies();
     } catch (error) {
       console.error('Error liking the movie:', error);
@@ -92,8 +93,8 @@ const MovieCatalogue = () => {
   return (
     <SecureLayout>
       <div>
-        <Grid container spacing={2} alignItems="center"> {/* Alignement vertical des éléments */}
-          <Grid item xs={10}> {/* Prend la moitié de la largeur de la grille */}
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={10}>
             <TextField
               label="Recherchez un film"
               value={searchTerm}
@@ -104,8 +105,8 @@ const MovieCatalogue = () => {
               InputLabelProps={{ shrink: true }}
             />
           </Grid>
-          <Grid item xs={1}> {/* Prend un quart de la largeur de la grille */}
-            <Button variant="contained" color="primary" onClick={handleSearch} fullWidth> {/* Utilisez fullWidth pour que le bouton prenne toute la largeur */}
+          <Grid item xs={1}>
+            <Button variant="contained" color="primary" onClick={handleSearch} fullWidth>
               Rechercher
             </Button>
           </Grid>
@@ -132,13 +133,21 @@ const MovieCatalogue = () => {
                       <Typography variant="body2" color="text.secondary">
                         {movie.overview}
                       </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Likes: {movie.likeCounter} {/* Afficher le nombre de likes */}
+                      <p></p>
+                      <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                      <Typography variant="body1" color="text.secondary">
+                        Likes: {movie.likeCounter}
                       </Typography>
-                      {/* Bouton "like" */}
-                      <Button variant="contained" color="secondary" onClick={() => handleLike(movie.id)}>
-                        Like
-                      </Button>
+                      {movie.isLiked ? (
+                        <Typography variant="body1" color="text.secondary">
+                          Liké
+                        </Typography>
+                        ) : (
+                          <Button onClick={() => handleLike(movie.id)}>
+                            <FavoriteIcon color="secondary" />
+                          </Button>
+                        )}
+                      </div>
                     </CardContent>
                   </Card>
                 </Grid>

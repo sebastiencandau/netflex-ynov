@@ -8,22 +8,30 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
   const login = (userData, token) => {
-    // Stockez l'utilisateur et le token dans le localStorage
     localStorage.setItem('user', JSON.stringify(userData));
     localStorage.setItem('token', token);
     setUser({ userData, token });
   };
 
   const logout = () => {
-    // Supprimez l'utilisateur et le token du localStorage lors de la déconnexion
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     setUser(null);
   };
 
+  const isTokenExpired = (token) => {
+    const payload = token.split('.')[1];
+    const decodedPayload = atob(payload);
+    const { exp } = JSON.parse(decodedPayload);
+  
+    return Date.now() >= exp * 1000;
+  };
+  
+
   const isAuthenticated = () => {
-    // Vérifiez si l'utilisateur est authentifié en vérifiant la présence du token dans le localStorage
-    return !!localStorage.getItem('token');
+    const token = localStorage.getItem('token');
+  
+    return !!token && !isTokenExpired(token);
   };
 
   return (

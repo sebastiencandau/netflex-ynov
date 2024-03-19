@@ -10,7 +10,7 @@
     "@emotion/react": "latest",
     "@emotion/server": "latest",
     "@emotion/styled": "latest",
-    "@mui/icons-material": "latest",
+    "@mui/icons-material": "^5.15.14",
     "@mui/material": "latest",
     "@mui/material-nextjs": "latest",
     "bcryptjs": "^2.4.3",
