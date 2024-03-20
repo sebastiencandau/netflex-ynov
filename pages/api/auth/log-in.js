@@ -65,24 +65,20 @@ export default async function handler(req, res) {
             const client = await clientPromise;
             const db = client.db('netflex-db');
 
-            // Vérifiez si l'utilisateur existe dans la base de données
             const user = await db.collection('users').findOne({ email });
 
             if (!user) {
                 return res.status(401).json({ error: 'Invalid email or password' });
             }
 
-            // Vérifiez si le mot de passe est correct
             const passwordMatch = await bcrypt.compare(password, user.password);
 
             if (!passwordMatch) {
                 return res.status(401).json({ error: 'Invalid email or password' });
             }
 
-            // Générez un JWT token
             const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
 
-            // Répondre avec les informations de l'utilisateur et le token JWT
             return res.status(200).json({ success: true, user: { email: user.email }, token });
         } catch (error) {
             console.error('Error logging in:', error);

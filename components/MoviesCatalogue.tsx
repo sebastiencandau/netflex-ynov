@@ -30,7 +30,6 @@ const MovieCatalogue = () => {
 
       if (searchTerm.trim() !== '') {
         url = `/api/search-movies?searchTerm=${encodeURIComponent(searchTerm.trim())}&page=${page}`;
-        console.log(url)
       }
 
       const token = localStorage.getItem('token');
@@ -90,6 +89,13 @@ const MovieCatalogue = () => {
     }
   };
 
+  const truncateString = (str: string, num: number) => {
+    if (str.length <= num) {
+      return str;
+    }
+    return str.slice(0, num) + '...';
+  }
+
   return (
     <SecureLayout>
       <div>
@@ -102,8 +108,9 @@ const MovieCatalogue = () => {
               fullWidth
               margin="normal"
               variant="outlined"
-              InputLabelProps={{ shrink: true }}
-            />
+              InputLabelProps={{ style: { color: 'white' } }} // Style de l'étiquette en blanc
+              inputProps={{ style: { color: 'white', borderColor: 'white' } }} // Style de l'entrée et de la bordure en blanc
+              />
           </Grid>
           <Grid item xs={1}>
             <Button variant="contained" color="primary" onClick={handleSearch} fullWidth>
@@ -128,10 +135,7 @@ const MovieCatalogue = () => {
                     />
                     <CardContent>
                       <Typography variant="h4" color={theme.palette.primary.main} component="div">
-                        {movie.title}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {movie.overview}
+                      {truncateString(movie.title, 20)} {/* Limite de 20 caractères */}
                       </Typography>
                       <p></p>
                       <div style={{display: 'flex', justifyContent: 'space-between'}}>

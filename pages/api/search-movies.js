@@ -1,3 +1,61 @@
+/**
+ * @swagger
+ * /api/search-movies:
+ *   get:
+ *     summary: Recherche de films.
+ *     description: Recherche des films en fonction d'un terme de recherche.
+ *     parameters:
+ *       - in: query
+ *         name: searchTerm
+ *         required: true
+ *         description: Le terme de recherche pour les films.
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         description: Le numéro de la page pour la pagination.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       '200':
+ *         description: Succès de la recherche de films.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 movies:
+ *                   type: array
+ *                   description: Les films correspondant au terme de recherche.
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         description: L'ID du film.
+ *                       title:
+ *                         type: string
+ *                         description: Le titre du film.
+ *                       overview:
+ *                         type: string
+ *                         description: La description du film.
+ *                       poster_path:
+ *                         type: string
+ *                         description: Le chemin de l'affiche du film.
+ *                       isLiked:
+ *                         type: boolean
+ *                         description: Indique si l'utilisateur a aimé ce film.
+ *                 total_pages:
+ *                   type: integer
+ *                   description: Le nombre total de pages de résultats.
+ *       '400':
+ *         description: Mauvaise requête. Le terme de recherche est manquant.
+ *       '405':
+ *         description: Méthode non autorisée. Seules les requêtes GET sont autorisées.
+ *       '500':
+ *         description: Erreur interne du serveur. Échec de la recherche de films.
+ */
 import { MongoClient } from 'mongodb';
 import jwt from 'jsonwebtoken';
 import { ObjectId } from 'mongodb';

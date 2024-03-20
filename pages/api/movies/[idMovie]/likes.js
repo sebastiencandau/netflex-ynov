@@ -6,45 +6,9 @@ import jwt from 'jsonwebtoken';
 /**
  * @swagger
  * /api/movies/{idMovie}/likes:
- *   get:
- *     summary: Get the number of likes for a specific movie
- *     parameters:
- *       - in: path
- *         name: idMovie
- *         required: true
- *         description: The ID of the movie
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Success. Returns the number of likes for the movie.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 idTMDB:
- *                   type: integer
- *                   description: The ID of the movie.
- *                 likeCounter:
- *                   type: integer
- *                   description: The number of likes for the movie.
- *               example:
- *                 idTMDB: 12345
- *                 likeCounter: 10
- *       404:
- *         description: Not found. The movie with the specified ID does not exist.
- *       405:
- *         description: Method Not Allowed. The method specified in the request is not allowed for the endpoint.
  *   patch:
- *     summary: Increment the like counter for a specific movie
- *     parameters:
- *       - in: path
- *         name: idMovie
- *         required: true
- *         description: The ID of the movie
- *         schema:
- *           type: integer
+ *     summary: Aimer un film.
+ *     description: Aime un film spécifié par son ID.
  *     requestBody:
  *       required: true
  *       content:
@@ -52,14 +16,15 @@ import jwt from 'jsonwebtoken';
  *           schema:
  *             type: object
  *             properties:
- *               token:
- *                 type: string
- *                 description: JWT token for user authentication.
- *             required:
- *               - token
+ *               idMovie:
+ *                 type: integer
+ *                 description: L'ID du film à aimer.
+ *                 example: 123
+ *     security:
+ *       - bearerAuth: []
  *     responses:
- *       201:
- *         description: Success. The like counter for the movie is incremented.
+ *       '201':
+ *         description: Film aimé avec succès.
  *         content:
  *           application/json:
  *             schema:
@@ -67,35 +32,56 @@ import jwt from 'jsonwebtoken';
  *               properties:
  *                 status:
  *                   type: integer
- *                   description: The status code of the response.
  *                   example: 201
+ *                   description: Le code de statut de la réponse.
+ *                 message:
+ *                   type: string
+ *                   example: Movie liked successfully
+ *                   description: Message indiquant que le film a été aimé avec succès.
+ *       '400':
+ *         description: Mauvaise requête. L'ID du film ou le token est manquant.
+ *       '401':
+ *         description: Non autorisé. L'utilisateur n'est pas authentifié ou le token est invalide.
+ *       '404':
+ *         description: Non trouvé. L'utilisateur n'existe pas.
+ *       '500':
+ *         description: Erreur interne du serveur. Échec de l'aimer du film.
+ *   get:
+ *     summary: Obtenir le nombre de likes pour un film.
+ *     description: Récupère le nombre total de likes pour un film spécifié par son ID.
+ *     parameters:
+ *       - in: query
+ *         name: idMovie
+ *         required: true
+ *         description: L'ID du film pour lequel obtenir le nombre de likes.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       '200':
+ *         description: Succès de la récupération du nombre de likes.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 200
+ *                   description: Le code de statut de la réponse.
  *                 data:
  *                   type: object
  *                   properties:
- *                     action:
- *                       type: string
- *                       description: The action performed.
- *                       example: likeCounter incremented
- *                     idMovie:
- *                       type: integer
- *                       description: The ID of the movie.
- *                     matchedCount:
- *                       type: integer
- *                       description: The number of documents matched by the update operation.
- *                     modifiedCount:
- *                       type: integer
- *                       description: The number of documents modified by the update operation.
- *                   example:
- *                     action: likeCounter incremented
- *                     idMovie: 12345
- *                     matchedCount: 1
- *                     modifiedCount: 1
- *       401:
- *         description: Unauthorized. Token is missing or invalid.
- *       404:
- *         description: Not found. The movie with the specified ID does not exist.
- *       405:
- *         description: Method Not Allowed. The method specified in the request is not allowed for the endpoint.
+ *                     likes:
+ *                       type: object
+ *                       description: Les données des likes pour le film spécifié.
+ *       '400':
+ *         description: Mauvaise requête. L'ID du film est manquant.
+ *       '404':
+ *         description: Non trouvé. Aucun like trouvé pour le film spécifié.
+ *       '405':
+ *         description: Méthode non autorisée. Seules les requêtes PATCH et GET sont autorisées.
+ *     security:
+ *       - bearerAuth: []
  */
 
 export default async function handler(req, res) {

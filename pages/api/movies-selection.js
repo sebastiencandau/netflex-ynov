@@ -1,17 +1,54 @@
+/**
+ * @swagger
+ * /api/movies-selection:
+ *   get:
+ *     summary: Obtenez les films les plus aimés.
+ *     description: Récupère les films les plus aimés à partir de la base de données.
+ *     responses:
+ *       '200':
+ *         description: Succès de la récupération des films les plus aimés.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 movies:
+ *                   type: array
+ *                   description: Les films les plus aimés.
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         description: L'ID du film.
+ *                       title:
+ *                         type: string
+ *                         description: Le titre du film.
+ *                       overview:
+ *                         type: string
+ *                         description: La description du film.
+ *                       poster_path:
+ *                         type: string
+ *                         description: Le chemin de l'affiche du film.
+ *                       isLiked:
+ *                         type: boolean
+ *                         description: Indique si l'utilisateur a aimé ce film.
+ *       '500':
+ *         description: Erreur interne du serveur. Échec de la récupération des films les plus aimés.
+ */
 import { MongoClient } from 'mongodb';
 import jwt from 'jsonwebtoken';
 import { ObjectId } from 'mongodb';
+import { Console } from 'console';
 
 async function getTopLikedMovies(req, res) {
     try {
-        // Se connecter à la base de données MongoDB
         const client = await MongoClient.connect(process.env.MONGODB_URI);
         const db = client.db("netflex-db");
 
-        // Récupérer les films les plus likés à partir de la collection "likes"
+
         const topLikedMovies = await db.collection("likes").find().sort({ likeCounter: -1 }).limit(10).toArray();
 
-        // Obtenir l'ID de l'utilisateur à partir du token JWT dans la requête
         const token = req.headers.authorization;
         let userId = null;
         if (token) {
@@ -19,38 +56,30 @@ async function getTopLikedMovies(req, res) {
             userId = decodedToken.userId;
         }
 
-        // Convertir l'ID de l'utilisateur en ObjectId
+
         const userIdObject = new ObjectId(userId);
         
-        // Recherchez l'utilisateur dans la collection en utilisant l'ObjectId
         const user = await db.collection("users").findOne({ _id: userIdObject });
 
-        // Récupérer les détails des films les plus likés à partir de l'API de The Movie Database en fonction de leurs IDs
         const moviesPromises = topLikedMovies.map(async (likedMovie) => {
+
             const url = `https://api.themoviedb.org/3/movie/${likedMovie.idTMDB}?api_key=${process.env.THEMOVIEDB_API_KEY}`;
             const response = await fetch(url);
             const movieData = await response.json();
-
-            // Vérifier si l'utilisateur a déjà liké ce film
             const isLiked = user.likes ? user.likes.includes(movieData.id) : null;
-            console.log('sjhfsujjf', isLiked)
 
             return {
                 id: movieData.id,
                 title: movieData.title,
                 overview: movieData.overview,
                 poster_path: movieData.poster_path,
-                isLiked: isLiked // Ajouter la propriété isLiked à l'objet du film
+                isLiked: isLiked
             };
         });
 
-        // Attendre que toutes les promesses pour récupérer les détails des films soient résolues
         const movies = await Promise.all(moviesPromises);
-
-        // Fermer la connexion à la base de données MongoDB
         await client.close();
 
-        // Envoyer les films les plus likés en réponse
         res.status(200).json({ movies });
     } catch (error) {
         console.error("Error fetching top liked movies:", error);

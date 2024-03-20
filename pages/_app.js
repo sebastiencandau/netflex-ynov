@@ -5,11 +5,9 @@ import theme from '../theme/theme';
 
 function MyApp({ Component, pageProps }) {
   return (
-    <div style={{ backgroundColor: theme.palette.background.default, padding: '20px' }}>
     <AuthProvider>
       <Component {...pageProps} />
     </AuthProvider>
-    </div>
   );
 }
 
