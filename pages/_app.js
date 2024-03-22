@@ -5,7 +5,7 @@ import theme from '../theme/theme';
 
 function MyApp({ Component, pageProps }) {
   return (
-    <AuthProvider>
+    <AuthProvider  style={{ backgroundColor: theme.palette.background.default, padding: '20px' }}>
       <Component {...pageProps} />
     </AuthProvider>
   );

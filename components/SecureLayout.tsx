@@ -16,9 +16,7 @@ const SecureLayout = ({ children }: any) => {
 
   return (
     <>
-      {/* Mettez ici la barre de navigation ou d'autres éléments communs */}
       {children}
-      {/* Mettez ici le pied de page ou d'autres éléments communs */}
     </>
   );
 };

@@ -19,12 +19,11 @@ interface MovieDetails {
 }
 
 const MovieDetails: React.FC = () => {
-  const router = useRouter(); // Utiliser useRouter pour obtenir les paramètres de l'URL
-  const { idMovie } = router.query; // Obtenez l'ID du film à partir des paramètres de l'URL
+  const router = useRouter(); 
+  const { idMovie } = router.query;
   const [movieDetails, setMovieDetails] = useState<MovieDetails | null>(null);
 
   useEffect(() => {
-    // Assurez-vous que idMovie est disponible avant de charger les détails du film
     if (idMovie) {
       fetchMovieDetails();
     }
@@ -32,10 +31,10 @@ const MovieDetails: React.FC = () => {
 
   const fetchMovieDetails = async () => {
     try {
-      const token = localStorage.getItem('token'); // Récupérer le token utilisateur depuis le localStorage
+      const token = localStorage.getItem('token');
       const response = await fetch(`/api/movies/${idMovie}`, {
         headers: {
-          Authorization: token ? `${token}` : '', // Inclure le token dans l'en-tête Authorization
+          Authorization: token ? `${token}` : '',
         },
       });
       const data = await response.json();
