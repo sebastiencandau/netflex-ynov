@@ -106,47 +106,31 @@ import { Console } from 'console';
 
 async function getMovieDetails(req, res) {
     try {
-        // Se connecter à la base de données MongoDB
         const client = await clientPromise;
         const db = client.db("netflex-db");
 
-        // Récupérer l'ID du film à partir des paramètres de requête
         const idMovie = parseInt(req.query.idMovie, 10);
 
 
-        // Obtenir les détails du film à partir de l'API The Movie Database
         const movieDetailsResponse = await fetch(`https://api.themoviedb.org/3/movie/${idMovie}?api_key=${process.env.THEMOVIEDB_API_KEY}&append_to_response=credits,reviews,recommendations`);
         const movieDetailsData = await movieDetailsResponse.json();
 
 
-        // Obtenir l'ID de l'utilisateur à partir du token JWT dans la requête
         const token = req.headers.authorization;
-        console.log(token)
         let userId = null;
         if (token) {
             const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
             userId = decodedToken.userId;
         }
 
-        console.log(userId);
-
-        // Convertir l'ID de l'utilisateur en ObjectId
         const userIdObject = new ObjectId(userId);
-        const tata = await db.collection('users').findOne(new ObjectId('65f827f542c72be4e6c0e52e'));
-        console.log(userIdObject);
 
-        // Recherchez l'utilisateur dans la collection en utilisant l'ObjectId
         const user = await db.collection("users").findOne({ _id: userIdObject });
 
-        console.log(userIdObject, user)
-        // Vérifier si l'utilisateur a déjà liké ce film
         const isLiked = user.likes ? user.likes.includes(idMovie) : false;
-        console.log('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')
 
-        // Fermer la connexion à la base de données MongoDB
         await client.close();
 
-        // Retourner les détails étendus du film
         res.status(200).json({ 
             movieDetails: {
                 id: movieDetailsData.id,

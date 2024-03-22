@@ -4,6 +4,19 @@
  *   get:
  *     summary: Obtenez les films les plus aimés.
  *     description: Récupère les films les plus aimés à partir de la base de données.
+ *     components:
+ *         securitySchemes:
+ *           bearerAuth:            # arbitrary name for the security scheme
+ *              type: http
+ *              scheme: bearer
+ *              bearerFormat: JWT    # optional, arbitrary value for documentation purposes
+ *     parameters:
+ *       - in: header
+ *         name: Authorization
+ *         schema:
+ *           type: string
+ *         description: Jeton JWT pour l'authentification.
+ *         required: true
  *     responses:
  *       '200':
  *         description: Succès de la récupération des films les plus aimés.
@@ -33,6 +46,8 @@
  *                       isLiked:
  *                         type: boolean
  *                         description: Indique si l'utilisateur a aimé ce film.
+ *       '401':
+ *         description: Non autorisé, jeton manquant ou invalide.
  *       '500':
  *         description: Erreur interne du serveur. Échec de la récupération des films les plus aimés.
  */
@@ -50,6 +65,8 @@ async function getTopLikedMovies(req, res) {
         const topLikedMovies = await db.collection("likes").find().sort({ likeCounter: -1 }).limit(10).toArray();
 
         const token = req.headers.authorization;
+        console.log('AAAAAAAAAAAAAAAAAAAAAAA',token);
+
         let userId = null;
         if (token) {
             const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
