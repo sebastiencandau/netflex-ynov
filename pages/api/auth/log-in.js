@@ -45,7 +45,6 @@
  *       500:
  *         description: Erreur interne du serveur. Échec de la connexion.
  */
-
 import { MongoClient } from 'mongodb';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';

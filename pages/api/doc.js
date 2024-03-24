@@ -1,4 +1,3 @@
-// pages/api/doc.js
 
 import { withSwagger } from 'next-swagger-doc';
 

@@ -1,60 +1,6 @@
-/**
- * @swagger
- * /api/movies-selection:
- *   get:
- *     summary: Obtenez les films les plus aimés.
- *     description: Récupère les films les plus aimés à partir de la base de données.
- *     components:
- *         securitySchemes:
- *           bearerAuth:            # arbitrary name for the security scheme
- *              type: http
- *              scheme: bearer
- *              bearerFormat: JWT    # optional, arbitrary value for documentation purposes
- *     parameters:
- *       - in: header
- *         name: Authorization
- *         schema:
- *           type: string
- *         description: Jeton JWT pour l'authentification.
- *         required: true
- *     responses:
- *       '200':
- *         description: Succès de la récupération des films les plus aimés.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 movies:
- *                   type: array
- *                   description: Les films les plus aimés.
- *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: integer
- *                         description: L'ID du film.
- *                       title:
- *                         type: string
- *                         description: Le titre du film.
- *                       overview:
- *                         type: string
- *                         description: La description du film.
- *                       poster_path:
- *                         type: string
- *                         description: Le chemin de l'affiche du film.
- *                       isLiked:
- *                         type: boolean
- *                         description: Indique si l'utilisateur a aimé ce film.
- *       '401':
- *         description: Non autorisé, jeton manquant ou invalide.
- *       '500':
- *         description: Erreur interne du serveur. Échec de la récupération des films les plus aimés.
- */
 import { MongoClient } from 'mongodb';
 import jwt from 'jsonwebtoken';
 import { ObjectId } from 'mongodb';
-import { Console } from 'console';
 
 async function getTopLikedMovies(req, res) {
     try {

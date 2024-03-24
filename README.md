@@ -1,82 +1,50 @@
-## Example app using MongoDB
+# 🎬 Netflex
 
-[MongoDB](https://www.mongodb.com/) is a general purpose, document-based, distributed database built for modern application developers and for the cloud era. This example will show you how to connect to and use MongoDB as your backend for your Next.js app.
+Netflex est une application catalogue de films où vous pouvez liker vos films préférés ! Les films les plus likés apparaissent en première page pour que vous puissiez les découvrir rapidement.
 
-If you want to learn more about MongoDB, visit the following pages:
+## 🚀 Lancement rapide
 
-- [MongoDB Atlas](https://mongodb.com/atlas)
-- [MongoDB Documentation](https://docs.mongodb.com/)
+Pour lancer l'application localement, suivez ces étapes simples :
 
-## Deploy your own
+1. Clonez ce dépôt :
+   ```bash
+   git clone https://github.com/sebastiencandau/netflex-ynov.git
+   ```
 
-Once you have access to the environment variables you'll need, deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example):
+2. Installez les dépendances :
+   ```bash
+   cd netflex-ynov
+   npm install -f
+   ```
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?project-name=with-mongodb&repository-name=with-mongodb&repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-mongodb&integration-ids=oac_jnzmjqM10gllKmSrG0SGrHOH)
+3. Remplissez le fichier `.env.local` en vous inspirant du fichier `.env.local.example`.
 
-## How to use
+4. Lancez l'application :
+   ```bash
+   npm run dev
+   ```
 
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init), [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/), or [pnpm](https://pnpm.io) to bootstrap the example:
+5. Accédez à l'application dans votre navigateur à l'adresse `http://localhost:3000`.
 
-```bash
-npx create-next-app --example with-mongodb with-mongodb-app
-```
+## 🛠️ Technologies utilisées
 
-```bash
-yarn create next-app --example with-mongodb with-mongodb-app
-```
+- [Next.js](https://nextjs.org) - Framework React
+- [Material-UI](https://mui.com) - Kit d'interface utilisateur React
+- [Node.js](https://nodejs.org) - Environnement d'exécution JavaScript côté serveur
+- [MongoDB](https://www.mongodb.com) - Base de données NoSQL
+- [Swagger](https://swagger.io) - Outil de documentation et de conception d'API
 
-```bash
-pnpm create next-app --example with-mongodb with-mongodb-app
-```
+## ℹ️ Utilisation de The Movie Database (TMDb)
 
-## Configuration
+Netflex utilise l'API de The Movie Database (TMDb) pour obtenir des informations sur les films, y compris les titres, les descriptions, les affiches, etc. Pour utiliser cette fonctionnalité, vous devez obtenir une clé API auprès de TMDb et la configurer dans le fichier `.env.local` sous la clé `THEMOVIEDB_API_KEY` ainsi que le token associé `API_TOKEN`
 
-### Set up a MongoDB database
+## 📝 Fonctionnalités à venir
 
-Set up a MongoDB database either locally or with [MongoDB Atlas for free](https://mongodb.com/atlas).
+- Tests unitaires et tests d'intégration
+- Documentation Swagger complète de toutes les routes
 
-### Set up environment variables
+## 🤝 Contributeur
 
-Copy the `env.local.example` file in this directory to `.env.local` (which will be ignored by Git):
+- [Candau Sébastien](https://github.com/sebastiencandau) - Développeur
 
-```bash
-cp .env.local.example .env.local
-```
-
-Set each variable on `.env.local`:
-
-- `MONGODB_URI` - Your MongoDB connection string. If you are using [MongoDB Atlas](https://mongodb.com/atlas) you can find this by clicking the "Connect" button for your cluster.
-
-### Run Next.js in development mode
-
-```bash
-npm install
-npm run dev
-
-# or
-
-yarn install
-yarn dev
-```
-
-Your app should be up and running on [http://localhost:3000](http://localhost:3000)! If it doesn't work, post on [GitHub discussions](https://github.com/vercel/next.js/discussions).
-
-You will either see a message stating "You are connected to MongoDB" or "You are NOT connected to MongoDB". Ensure that you have provided the correct `MONGODB_URI` environment variable.
-
-When you are successfully connected, you can refer to the [MongoDB Node.js Driver docs](https://mongodb.github.io/node-mongodb-native/3.4/tutorials/collections/) for further instructions on how to query your database.
-
-## Deploy on Vercel
-
-You can deploy this app to the cloud with [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
-
-#### Deploy Your Local Project
-
-To deploy your local project to Vercel, push it to GitHub/GitLab/Bitbucket and [import to Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example).
-
-**Important**: When you import your project on Vercel, make sure to click on **Environment Variables** and set them to match your `.env.local` file.
-
-#### Deploy from Our Template
-
-Alternatively, you can deploy using our template by clicking on the Deploy button below.
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?project-name=with-mongodb&repository-name=with-mongodb&repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-mongodb&integration-ids=oac_jnzmjqM10gllKmSrG0SGrHOH)
+Projet réalisé dans le cadre du module "Développer pour le cloud" M1 - Ynov
