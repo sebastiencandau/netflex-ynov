@@ -1,5 +1,3 @@
-# .circleci/config.yml
-
 version: 2.1
 orbs:
   node: circleci/node@5
@@ -13,8 +11,9 @@ jobs:
       - checkout
       - node/install-packages:
           pkg-manager: npm
+          options: "-f" # Add the -f option here
       - run:
-          command: npm install -f jest-junit
+          command: npm install jest-junit
       - run:
           name: Run tests
           command: npm run test:ci
