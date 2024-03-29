@@ -13,7 +13,7 @@ jobs:
           name: Install packages with -f
           command: npm install -f
       - run:
-          command: npm install jest-junit
+          command: npm install -f jest-junit
       - run:
           name: Run tests
           command: npm run test:ci
