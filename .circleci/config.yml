@@ -9,9 +9,9 @@ jobs:
       JEST_JUNIT_OUTPUT_DIR: ./test-results/
     steps:
       - checkout
-      - node/install-packages:
-          pkg-manager: npm
-          options: "-f" # Add the -f option here
+      - run:
+          name: Install packages with -f
+          command: npm install -f
       - run:
           command: npm install jest-junit
       - run:
