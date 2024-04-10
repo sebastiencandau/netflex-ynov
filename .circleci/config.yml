@@ -39,10 +39,11 @@ jobs:
       - run: echo "Running verification tests..."
 
   functional-tests:
-    executor: node/default
-    steps:
-      - checkout
-      - run: echo "Running functional tests..."
+  executor: node/default
+  steps:
+    - checkout
+    - run: npm run test
+
 
   load-tests:
     executor: node/default
