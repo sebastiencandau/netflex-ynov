@@ -3,143 +3,99 @@ orbs:
   node: circleci/node@5
 
 jobs:
-  # Job pour l'installation des dépendances
   install-dependencies:
     executor: node/default
     steps:
       - checkout
-      - run:
-          name: Install packages with -f
-          command: npm install -f
-      - run:
-          name: Echo Dependencies Installed
-          command: echo "Dependencies installed successfully."
+      - run: npm install -f
+      - run: echo "Dependencies installed successfully."
 
-  # Job pour l'analyse du code
   code-analysis:
     executor: node/default
     steps:
       - checkout
-      - run:
-          name: Run Code Analysis
-          command: echo "Running code analysis..."
+      - run: echo "Running code analysis..."
 
-  # Job pour le nettoyage et l'emballage de l'application
   clean-and-package:
     executor: node/default
     steps:
       - checkout
-      - run:
-          name: Clean and Package Application
-          command: echo "Cleaning and packaging application..."
+      - run: echo "Cleaning and packaging application..."
 
-  # Job pour la préparation de l'environnement de déploiement
-  prepare-deployment:
+  deploy_and_notify:
     executor: node/default
+    parameters:
+      target_env:
+        type: string
     steps:
       - checkout
-      - run:
-          name: Prepare Deployment Environment
-          command: echo "Preparing deployment environment..."
+      - run: echo "Deploying application to << parameters.target_env >> environment..."
+      - run: echo "Notification sent for deployment to << parameters.target_env >> environment..."
 
-  # Job pour le déploiement de l'application
-  deploy:
-    executor: node/default
-    steps:
-      - checkout
-      - run:
-          name: Deploy Application
-          command: echo "Deploying application..."
-
-  # Job pour les tests de vérification
   verification-tests:
     executor: node/default
     steps:
       - checkout
-      - run:
-          name: Run Verification Tests
-          command: echo "Running verification tests..."
+      - run: echo "Running verification tests..."
 
-  # Job pour les tests de validation fonctionnelle
   functional-tests:
     executor: node/default
     steps:
       - checkout
-      - run:
-          name: Run Functional Tests
-          command: echo "Running functional tests..."
+      - run: echo "Running functional tests..."
 
-  # Job pour les tests de charge
   load-tests:
     executor: node/default
     steps:
       - checkout
-      - run:
-          name: Run Load Tests
-          command: echo "Running load tests..."
+      - run: echo "Running load tests..."
 
-  # Job pour la surveillance et le suivi
   monitoring-and-tracking:
     executor: node/default
     steps:
       - checkout
-      - run:
-          name: Monitor and Track Application
-          command: echo "Monitoring and tracking application..."
+      - run: echo "Monitoring and tracking application..."
 
 workflows:
-  build-and-deploy:
+  version: 2
+  build-deploy-notify:
     jobs:
-      # Étape "build"
       - install-dependencies
-      - code-analysis
-      - clean-and-package
-
-      # Étape "deploy"
-      - prepare-deployment:
+      - code-analysis:
+          requires:
+            - install-dependencies
+      - clean-and-package:
+          requires:
+            - code-analysis
+      - deploy_and_notify:
+          name: deploy_and_notify_develop
           requires:
             - clean-and-package
           filters:
             branches:
-              only:
-                - develop
-      - deploy:
+              only: develop
+          target_env: develop
+      - deploy_and_notify:
+          name: deploy_and_notify_main
           requires:
-            - prepare-deployment
+            - clean-and-package
           filters:
             branches:
-              only:
-                - develop
-                - main
+              only: main
+          target_env: main
       - verification-tests:
           requires:
-            - deploy
-          filters:
-            branches:
-              only:
-                - develop
-                - main
+            - deploy_and_notify_develop
+            - deploy_and_notify_main
       - functional-tests:
           requires:
-            - deploy
-          filters:
-            branches:
-              only:
-                - develop
-                - main
+            - deploy_and_notify_develop
+            - deploy_and_notify_main
       - load-tests:
           requires:
-            - deploy
-          filters:
-            branches:
-              only:
-                - develop
-                - main
+            - deploy_and_notify_develop
+            - deploy_and_notify_main
       - monitoring-and-tracking:
           requires:
-            - deploy
-          filters:
-            branches:
-              only:
-                - develop
-                - main
+            - deploy_and_notify_develop
+            - deploy_and_notify_main
