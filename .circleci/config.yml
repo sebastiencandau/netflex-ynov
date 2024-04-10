@@ -3,35 +3,24 @@ orbs:
   node: circleci/node@5
 
 jobs:
-  # Job pour l'installation des dépendances
   install-dependencies:
     executor: node/default
     steps:
       - checkout
-      - run:
-          name: Install packages with -f
-          command: npm install -f
-      - run:
-          name: Echo Dependencies Installed
-          command: echo "Dependencies installed successfully."
+      - run: npm install -f
+      - run: echo "Dependencies installed successfully."
 
-  # Job pour l'analyse du code
   code-analysis:
     executor: node/default
     steps:
       - checkout
-      - run:
-          name: Run Code Analysis
-          command: echo "Running code analysis..."
+      - run: echo "Running code analysis..."
 
-  # Job pour le nettoyage et l'emballage de l'application
   clean-and-package:
     executor: node/default
     steps:
       - checkout
-      - run:
-          name: Clean and Package Application
-          command: echo "Cleaning and packaging application..."
+      - run: echo "Cleaning and packaging application..."
 
   deploy_and_notify:
     executor: node/default
@@ -40,12 +29,32 @@ jobs:
         type: string
     steps:
       - checkout
-      - run:
-          name: Deploy Application
-          command: echo "Deploying application to << parameters.target_env >> environment..."
-      - run:
-          name: Notify Deployment
-          command: echo "Notification sent for deployment to << parameters.target_env >> environment..."
+      - run: echo "Deploying application to << parameters.target_env >> environment..."
+      - run: echo "Notification sent for deployment to << parameters.target_env >> environment..."
+
+  verification-tests:
+    executor: node/default
+    steps:
+      - checkout
+      - run: echo "Running verification tests..."
+
+  functional-tests:
+    executor: node/default
+    steps:
+      - checkout
+      - run: echo "Running functional tests..."
+
+  load-tests:
+    executor: node/default
+    steps:
+      - checkout
+      - run: echo "Running load tests..."
+
+  monitoring-and-tracking:
+    executor: node/default
+    steps:
+      - checkout
+      - run: echo "Monitoring and tracking application..."
 
 workflows:
   version: 2
@@ -74,3 +83,19 @@ workflows:
             branches:
               only: main
           target_env: main
+      - verification-tests:
+          requires:
+            - deploy_and_notify_develop
+            - deploy_and_notify_main
+      - functional-tests:
+          requires:
+            - deploy_and_notify_develop
+            - deploy_and_notify_main
+      - load-tests:
+          requires:
+            - deploy_and_notify_develop
+            - deploy_and_notify_main
+      - monitoring-and-tracking:
+          requires:
+            - deploy_and_notify_develop
+            - deploy_and_notify_main
