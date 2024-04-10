@@ -33,17 +33,15 @@ workflows:
           name: deploy_and_notify_develop
           requires:
             - build
-          parameters:
-            target_env: develop
           filters:
             branches:
               only: develop
+          target_env: develop
       - deploy_and_notify:
           name: deploy_and_notify_main
           requires:
             - build
-          parameters:
-            target_env: main
           filters:
             branches:
               only: main
+          target_env: main
