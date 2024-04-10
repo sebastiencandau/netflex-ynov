@@ -3,12 +3,35 @@ orbs:
   node: circleci/node@5
 
 jobs:
-  build:
+  # Job pour l'installation des dépendances
+  install-dependencies:
     executor: node/default
     steps:
       - checkout
-      - run: npm install -f
-      - run: echo "Running tests and analysis..."
+      - run:
+          name: Install packages with -f
+          command: npm install -f
+      - run:
+          name: Echo Dependencies Installed
+          command: echo "Dependencies installed successfully."
+
+  # Job pour l'analyse du code
+  code-analysis:
+    executor: node/default
+    steps:
+      - checkout
+      - run:
+          name: Run Code Analysis
+          command: echo "Running code analysis..."
+
+  # Job pour le nettoyage et l'emballage de l'application
+  clean-and-package:
+    executor: node/default
+    steps:
+      - checkout
+      - run:
+          name: Clean and Package Application
+          command: echo "Cleaning and packaging application..."
 
   deploy_and_notify:
     executor: node/default
@@ -26,13 +49,19 @@ jobs:
 
 workflows:
   version: 2
-  build-and-deploy:
+  build-deploy-notify:
     jobs:
-      - build
+      - install-dependencies
+      - code-analysis:
+          requires:
+            - install-dependencies
+      - clean-and-package:
+          requires:
+            - code-analysis
       - deploy_and_notify:
           name: deploy_and_notify_develop
           requires:
-            - build
+            - clean-and-package
           filters:
             branches:
               only: develop
@@ -40,7 +69,7 @@ workflows:
       - deploy_and_notify:
           name: deploy_and_notify_main
           requires:
-            - build
+            - clean-and-package
           filters:
             branches:
               only: main
