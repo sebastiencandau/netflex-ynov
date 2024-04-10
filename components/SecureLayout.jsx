@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../contexts/auth.context';
 
-const SecureLayout = ({ children }: any) => {
+const SecureLayout = ({ children }) => {
   const router = useRouter();
   const { isAuthenticated } = useAuth();
 

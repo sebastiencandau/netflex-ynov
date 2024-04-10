@@ -4,21 +4,12 @@ import SecureLayout from './SecureLayout';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import theme from '../theme/theme';
 
-interface Movie {
-  id: number;
-  title: string;
-  overview: string;
-  poster_path: string;
-  likeCounter: number;
-  isLiked: boolean; // Nouveau champ pour indiquer si le film est déjà liké par l'utilisateur
-}
-
 const MovieCatalogue = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [page, setPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchMovies();
@@ -42,7 +33,7 @@ const MovieCatalogue = () => {
 
       const data = await response.json();
 
-      const moviesWithLikes = await Promise.all(data.movies.map(async (movie: Movie) => {
+      const moviesWithLikes = await Promise.all(data.movies.map(async (movie) => {
         const likesResponse = await fetch(`/api/movies/${movie.id}/likes`);
         const likesData = await likesResponse.json();
         movie.likeCounter = likesData.data.likes ? likesData.data.likes.likeCounter : 0;
@@ -66,7 +57,7 @@ const MovieCatalogue = () => {
     setMovies([]);
   };
 
-  const handleLike = async (movieId: number) => {
+  const handleLike = async (movieId) => {
     try {
       const token = localStorage.getItem('token');
   
@@ -89,7 +80,7 @@ const MovieCatalogue = () => {
     }
   };
 
-  const truncateString = (str: string, num: number) => {
+  const truncateString = (str, num) => {
     if (str.length <= num) {
       return str;
     }
