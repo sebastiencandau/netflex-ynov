@@ -7,13 +7,11 @@ jobs:
     executor: node/default
     steps:
       - checkout
-      # Restaure le cache si disponible
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "package-lock.json" }}
             - v1-dependencies-
       - run: npm install -f
-      # Sauvegarde le cache après l'installation
       - save_cache:
           paths:
             - node_modules
@@ -31,19 +29,8 @@ jobs:
     steps:
       - checkout
       - run: echo "Cleaning and packaging application..."
-      
-  verification-tests:
-    executor: node/default
-    steps:
-      - checkout
-      # Assurez-vous de restaurer le cache avant de lancer les tests
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package-lock.json" }}
-            - v1-dependencies-
-      - run: npm run test -f
 
-  deploy_and_notify:
+  deploy_and_notify_develop:
     executor: node/default
     parameters:
       target_env:
@@ -52,6 +39,16 @@ jobs:
       - checkout
       - run: echo "Deploying application to << parameters.target_env >> environment..."
       - run: echo "Notification sent for deployment to << parameters.target_env >> environment..."
+
+  verification-tests:
+    executor: node/default
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package-lock.json" }}
+            - v1-dependencies-
+      - run: npm run test -f
 
   functional-tests:
     executor: node/default
