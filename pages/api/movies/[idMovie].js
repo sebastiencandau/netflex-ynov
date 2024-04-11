@@ -137,7 +137,7 @@ async function getMovieDetails(req, res) {
                 title: movieDetailsData.title,
                 overview: movieDetailsData.overview,
                 poster_path: movieDetailsData.poster_path,
-                trailer_link: movieDetailsData.trailer_link, // Vous devrez ajouter cela si vous avez les liens de bande-annonce dans votre base de données ou l'API TMDb
+                trailer_link: movieDetailsData.trailer_link,
                 genres: movieDetailsData.genres,
                 actors: movieDetailsData.credits.cast,
                 reviews: movieDetailsData.reviews.results,

@@ -92,9 +92,7 @@ export default async function handler(req, res) {
         }
     
         try {
-            // Vérifier et décoder le token JWT
             const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-            // Extraire l'ID de l'utilisateur du token décodé
             const userId = decodedToken.userId;
             return userId;
         } catch (error) {
@@ -121,33 +119,26 @@ export default async function handler(req, res) {
                 return res.status(401).json({ error: 'Invalid token' });
             }
             try {
-                // Convertir l'ID de l'utilisateur en ObjectId
                 const userIdObject = new ObjectId(userId);
         
-                // Recherchez l'utilisateur dans la collection en utilisant l'ObjectId
                 const user = await db.collection("users").findOne({ _id: userIdObject });
                 if (!user) {
                     return res.status(404).json({ error: 'User not found' });
                 }
         
-                // Vérifier si l'utilisateur a déjà liké ce film
                 if (user.likes && user.likes.includes(idMovie)) {
                     return res.status(400).json({ error: 'User already liked this movie' });
                 }
         
-                // Incrémenter le compteur de likes du film
                 const movieLikeResponse = await db.collection("likes").updateOne(
                     { idTMDB: idMovie },
                     { $inc: { likeCounter: 1 } }
                 );
         
-                // Vérifier si le film existe dans la collection des likes
                 if (movieLikeResponse.modifiedCount === 0) {
-                    // Si le film n'existe pas, insérez-le avec un compteur de likes initialisé à 1
                     await db.collection("likes").insertOne({ idTMDB: idMovie, likeCounter: 1 });
                 }
         
-                // Ajouter l'ID du film dans le tableau des likes de l'utilisateur
                 await db.collection("users").updateOne(
                     { _id: userIdObject },
                     { $push: { likes: idMovie } }

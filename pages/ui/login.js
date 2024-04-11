@@ -3,13 +3,12 @@ import { useRouter } from 'next/router';
 import { Button, TextField, Typography, Link, ThemeProvider } from '@mui/material';
 import { useAuth } from '../../contexts/auth.context';
 import fetch from 'node-fetch';
-import theme from '../../theme/theme'; // Importez votre thème MUI
+import theme from '../../theme/theme';
 
 const SignInPage = () => {
   const router = useRouter();
-  const { isAuthenticated, login } = useAuth(); // Utilisez le hook useAuth pour vérifier l'authentification
+  const { isAuthenticated, login } = useAuth();
 
-  // Redirigez l'utilisateur vers la page d'accueil s'il est déjà authentifié
   useEffect(() => {
     if (isAuthenticated()) {
       router.push('/');
@@ -49,7 +48,7 @@ const SignInPage = () => {
   };
 
   return (
-    <ThemeProvider theme={theme}> {/* Enveloppez le contenu avec le thème MUI */}
+    <ThemeProvider theme={theme}>
       <div style={{ textAlign: 'center' }}>
         <Typography variant="h1" gutterBottom>
           Netflex

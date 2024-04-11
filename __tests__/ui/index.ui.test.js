@@ -24,10 +24,9 @@ Promise.resolve({
 );
 
   it('redirects to sign-in page if user is not authenticated', () => {
-    // Mocking isAuthenticated to return false
     useAuth.mockReturnValue({
       isAuthenticated: jest.fn().mockReturnValue(false),
-      login: jest.fn(), // You can mock login as well if needed
+      login: jest.fn(),
     });
 
     render(<Index />);
@@ -43,7 +42,6 @@ Promise.resolve({
 
     render(<Index />);
 
-    // Vérifier que useRouter().push n'est pas appelé
     expect(useRouter().push).not.toHaveBeenCalled();
   });
 
