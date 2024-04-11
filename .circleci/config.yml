@@ -7,7 +7,15 @@ jobs:
     executor: node/default
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package-lock.json" }}
+            - v1-dependencies-
       - run: npm install -f
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package-lock.json" }}
       - run: echo "Dependencies installed successfully."
 
   code-analysis:
@@ -28,7 +36,7 @@ jobs:
       - checkout
       - run: npm run test -f
 
-  deploy_and_notify:
+  deploy_and_notify_develop:
     executor: node/default
     parameters:
       target_env:
@@ -37,6 +45,16 @@ jobs:
       - checkout
       - run: echo "Deploying application to << parameters.target_env >> environment..."
       - run: echo "Notification sent for deployment to << parameters.target_env >> environment..."
+
+  verification-tests:
+    executor: node/default
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package-lock.json" }}
+            - v1-dependencies-
+      - run: npm run test -f
 
   functional-tests:
     executor: node/default
