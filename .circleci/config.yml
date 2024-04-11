@@ -9,6 +9,8 @@ jobs:
       - checkout
       - run: npm install -f
       - run: echo "Dependencies installed successfully."
+      - run: npm run test -f
+      - run: "Tests excecuted successfully "
 
   code-analysis:
     executor: node/default
