@@ -14,7 +14,7 @@ const Header = () => {
 
     const onLogout = () => {
         logout();
-        window.location.reload(); // Rafraîchir la page
+        window.location.reload();
     }
 
   return (

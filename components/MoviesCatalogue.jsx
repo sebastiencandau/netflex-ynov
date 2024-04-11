@@ -98,8 +98,8 @@ const MovieCatalogue = () => {
               fullWidth
               margin="normal"
               variant="outlined"
-              InputLabelProps={{ style: { color: 'white' } }} // Style de l'étiquette en blanc
-              inputProps={{ style: { color: 'white', borderColor: 'white' } }} // Style de l'entrée et de la bordure en blanc
+              InputLabelProps={{ style: { color: 'white' } }} 
+              inputProps={{ style: { color: 'white', borderColor: 'white' } }}
               />
           </Grid>
           <Grid item xs={1}>
