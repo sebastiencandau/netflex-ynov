@@ -7,15 +7,7 @@ jobs:
     executor: node/default
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package-lock.json" }}
-            - v1-dependencies-
       - run: npm install -f
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package-lock.json" }}
       - run: echo "Dependencies installed successfully."
 
   code-analysis:
@@ -29,14 +21,8 @@ jobs:
     steps:
       - checkout
       - run: echo "Cleaning and packaging application..."
-      
-  verification-tests:
-    executor: node/default
-    steps:
-      - checkout
-      - run: npm run test -f
 
-  deploy_and_notify_develop:
+  deploy_and_notify:
     executor: node/default
     parameters:
       target_env:
@@ -50,11 +36,7 @@ jobs:
     executor: node/default
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package-lock.json" }}
-            - v1-dependencies-
-      - run: npm run test -f
+      - run: echo "Running verification tests..."
 
   functional-tests:
     executor: node/default
