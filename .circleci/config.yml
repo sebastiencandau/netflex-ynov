@@ -22,7 +22,7 @@ jobs:
       - checkout
       - run: echo "Cleaning and packaging application..."
 
-    verification-tests:
+  verification-tests:
     executor: node/default
     steps:
       - checkout
