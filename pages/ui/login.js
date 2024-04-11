@@ -19,7 +19,7 @@ const SignInPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
+  
   const handleSignIn = async () => {
     try {
       const response = await fetch('/api/auth/log-in', {
