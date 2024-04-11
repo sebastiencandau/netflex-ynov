@@ -4,7 +4,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "./node_modules/.bin/jest"
+    "test": "jest"
   },
   "dependencies": {
     "@emotion/cache": "latest",
