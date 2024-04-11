@@ -16,7 +16,7 @@ const SecureLayout = ({ children }) => {
 
   return (
     <>
-      {children}
+      {isAuthenticated && children}
     </>
   );
 };

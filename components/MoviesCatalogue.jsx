@@ -3,6 +3,7 @@ import { Grid, Card, CardContent, CardMedia, Typography, CircularProgress, Butto
 import SecureLayout from './SecureLayout';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import theme from '../theme/theme';
+import { useAuth } from '../contexts/auth.context';
 
 const MovieCatalogue = () => {
   const [movies, setMovies] = useState([]);
@@ -12,11 +13,10 @@ const MovieCatalogue = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    fetchMovies();
+     fetchMovies();
   }, [page, searchTerm]);
 
   const fetchMovies = async () => {
-    try {
       let url = `/api/movies-selection`;
 
       if (searchTerm.trim() !== '') {
@@ -33,19 +33,18 @@ const MovieCatalogue = () => {
 
       const data = await response.json();
 
-      const moviesWithLikes = await Promise.all(data.movies.map(async (movie) => {
-        const likesResponse = await fetch(`/api/movies/${movie.id}/likes`);
-        const likesData = await likesResponse.json();
-        movie.likeCounter = likesData.data.likes ? likesData.data.likes.likeCounter : 0;
-        return movie;
-      }));
+      if(data.movies){
+        const moviesWithLikes = await Promise.all(data.movies.map(async (movie) => {
+          const likesResponse = await fetch(`/api/movies/${movie.id}/likes`);
+          const likesData = await likesResponse.json();
+          movie.likeCounter = likesData.data.likes ? likesData.data.likes.likeCounter : 0;
+          return movie;
+        }));
 
-      setMovies(moviesWithLikes);
-      setTotalPages(data.total_pages);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching movies:', error);
-    }
+        setMovies(moviesWithLikes);
+        setTotalPages(data.total_pages);
+        setLoading(false);
+      }
   };
 
   const handleLoadMore = () => {
