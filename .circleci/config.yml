@@ -7,17 +7,7 @@ jobs:
     executor: node/default
     steps:
       - checkout
-      # Restaure le cache si disponible
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package-lock.json" }}
-            - v1-dependencies-
       - run: npm install -f
-      # Sauvegarde le cache après l'installation
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package-lock.json" }}
       - run: echo "Dependencies installed successfully."
 
   code-analysis:
@@ -36,11 +26,6 @@ jobs:
     executor: node/default
     steps:
       - checkout
-      # Assurez-vous de restaurer le cache avant de lancer les tests
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package-lock.json" }}
-            - v1-dependencies-
       - run: npm run test -f
 
   deploy_and_notify:
@@ -82,14 +67,16 @@ workflows:
       - clean-and-package:
           requires:
             - code-analysis
-      - deploy_and_notify_develop:
+      - deploy_and_notify:
+          name: deploy_and_notify_develop
           requires:
             - clean-and-package
           filters:
             branches:
               only: develop
           target_env: develop
-      - deploy_and_notify_main:
+      - deploy_and_notify:
+          name: deploy_and_notify_main
           requires:
             - clean-and-package
           filters:
