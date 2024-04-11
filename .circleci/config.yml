@@ -22,6 +22,12 @@ jobs:
       - checkout
       - run: echo "Cleaning and packaging application..."
 
+  verification-tests:
+    executor: node/default
+    steps:
+      - checkout
+      - run: npm run test -f
+
   deploy_and_notify:
     executor: node/default
     parameters:
@@ -31,12 +37,6 @@ jobs:
       - checkout
       - run: echo "Deploying application to << parameters.target_env >> environment..."
       - run: echo "Notification sent for deployment to << parameters.target_env >> environment..."
-
-  verification-tests:
-    executor: node/default
-    steps:
-      - checkout
-      - run: echo "Running verification tests..."
 
   functional-tests:
     executor: node/default

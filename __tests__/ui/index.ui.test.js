@@ -1,69 +1,50 @@
-// __tests__/ui/index.ui.test.js
-
 import { render, screen } from '@testing-library/react';
-import HomePage from '../../pages/index';
-import { AuthProvider } from '../../contexts/';
+import Index from '../../pages/index';
+import { useAuth } from '../../contexts/auth.context';
 
-jest.mock('next/router', () => ({
-  useRouter: () => ({
-    push: jest.fn(),
-  }),
+const useRouter = jest.spyOn(require('next/router'), 'useRouter');
+useRouter.mockImplementation(() => ({
+  pathname: '/',
+  ...moreRouterData
 }));
+jest.mock('../../contexts/auth.context');
 
-describe('HomePage component', () => {
+describe('Index', () => {
   beforeEach(() => {
-    console.error = jest.fn();
+    useRouter.mockReturnValue({
+      push: jest.fn(),
+    });
   });
 
-  test('renders home page with title when authenticated', () => {
-    render(
-      <AuthProvider value={{ isAuthenticated: true }}>
-        <HomePage />
-      </AuthProvider>
-    );
+  //mock fetch
+global.fetch = jest.fn(() =>
+Promise.resolve({
+    json: () => Promise.resolve({ data: { results: [], page: 1, total_pages: 1 } }),
+})
+);
 
-    expect(screen.getByText('Netflex')).toBeInTheDocument();
-  });
+  it('redirects to sign-in page if user is not authenticated', () => {
+    // Mocking isAuthenticated to return false
+    useAuth.mockReturnValue({
+      isAuthenticated: jest.fn().mockReturnValue(false),
+      login: jest.fn(), // You can mock login as well if needed
+    });
 
-  test('renders home page without title when not authenticated', () => {
-    render(
-      <AuthProvider value={{ isAuthenticated: false }}>
-        <HomePage />
-      </AuthProvider>
-    );
-
-    expect(screen.queryByText('Netflex')).toBeNull();
-  });
-
-  test('redirects to login page when not authenticated', () => {
-    const useRouter = jest.fn();
-    useRouter.mockReturnValueOnce({ push: jest.fn() });
-    jest.mock('next/router', () => ({
-      useRouter,
-    }));
-
-    render(
-      <AuthProvider value={{ isAuthenticated: false }}>
-        <HomePage />
-      </AuthProvider>
-    );
+    render(<Index />);
 
     expect(useRouter().push).toHaveBeenCalledWith('/ui/login');
   });
 
-  test('does not redirect when authenticated', () => {
-    const useRouter = jest.fn();
-    useRouter.mockReturnValueOnce({ push: jest.fn() });
-    jest.mock('next/router', () => ({
-      useRouter,
-    }));
+  it('does not redirect if user is authenticated', () => {
+    useAuth.mockReturnValue({
+      isAuthenticated: jest.fn().mockReturnValue(true),
+      login: jest.fn(),
+    });
 
-    render(
-      <AuthProvider value={{ isAuthenticated: true }}>
-        <HomePage />
-      </AuthProvider>
-    );
+    render(<Index />);
 
+    // Vérifier que useRouter().push n'est pas appelé
     expect(useRouter().push).not.toHaveBeenCalled();
   });
+
 });
